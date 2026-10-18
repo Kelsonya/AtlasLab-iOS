@@ -92,6 +92,11 @@ public struct AtlasFeaturePolicy: Codable {
 public struct AtlasRuleBook: Codable {
     public let version: Int
     public let policies: [AtlasFeaturePolicy]
+    public init(version: Int, policies: [AtlasFeaturePolicy]) {
+        self.version = version
+        self.policies = policies
+    }
+
     public func policy(for feature: AtlasFeature) -> AtlasFeaturePolicy? {
         policies.first(where: { $0.feature == feature })
     }
