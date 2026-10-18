@@ -1,0 +1,33 @@
+name: AtlasLab
+options:
+  bundleIdPrefix: com.reverselab
+  deploymentTarget:
+    iOS: '16.0'
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: '5.0'
+    IPHONEOS_DEPLOYMENT_TARGET: '16.0'
+    TARGETED_DEVICE_FAMILY: '1,2'
+    SWIFT_OBJC_BRIDGING_HEADER: App/AtlasLab-Bridging-Header.h
+    ENABLE_BITCODE: 'NO'
+    PRODUCT_BUNDLE_IDENTIFIER: com.reverselab.atlastraining
+    CLANG_ENABLE_MODULES: 'YES'
+    SWIFT_OPTIMIZATION_LEVEL: '-O'
+    GCC_OPTIMIZATION_LEVEL: s
+    LLVM_LTO: 'NO'
+targets:
+  AtlasLab:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+        excludes:
+          - Info.plist
+    settings:
+      base:
+        INFOPLIST_FILE: App/Info.plist
+        PRODUCT_NAME: AtlasLab
+        ASSETCATALOG_COMPILER_APPICON_NAME: ''
+    scheme:
+      testTargets: []
