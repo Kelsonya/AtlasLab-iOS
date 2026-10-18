@@ -1,0 +1,13 @@
+{
+ "version": 4,
+ "policies": [
+  {"feature":"reading","minimumTier":"basic","minimumRevision":1,"enabled":true,"needsFreshLease":false},
+  {"feature":"bookmarks","minimumTier":"basic","minimumRevision":1,"enabled":true,"needsFreshLease":false},
+  {"feature":"deepDive","minimumTier":"plus","minimumRevision":2,"enabled":true,"needsFreshLease":false},
+  {"feature":"studio","minimumTier":"pro","minimumRevision":3,"enabled":true,"needsFreshLease":false},
+  {"feature":"insights","minimumTier":"pro","minimumRevision":3,"enabled":true,"needsFreshLease":true},
+  {"feature":"exporting","minimumTier":"pro","minimumRevision":4,"enabled":true,"needsFreshLease":true},
+  {"feature":"offlineCache","minimumTier":"plus","minimumRevision":2,"enabled":true,"needsFreshLease":false},
+  {"feature":"laboratory","minimumTier":"lifetime","minimumRevision":4,"enabled":true,"needsFreshLease":true}
+ ]
+}

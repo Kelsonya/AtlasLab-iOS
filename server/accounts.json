@@ -1,0 +1,6 @@
+{
+  "orion": {"tier":"pro","state":"active","expires_at":1704067199,"features":["reading","bookmarks","deepDive","studio","insights","exporting","offlineCache","laboratory"],"revision":4},
+  "nova": {"tier":"lifetime","state":"active","expires_at":4102444799,"features":["reading","bookmarks","deepDive","studio","insights","exporting","offlineCache","laboratory"],"revision":4},
+  "quartz": {"tier":"pro","state":"suspended","expires_at":4102444799,"features":["reading","bookmarks","deepDive","studio","insights","exporting","offlineCache","laboratory"],"revision":4},
+  "echo": {"tier":"basic","state":"active","expires_at":4102444799,"features":["reading","bookmarks"],"revision":4}
+}

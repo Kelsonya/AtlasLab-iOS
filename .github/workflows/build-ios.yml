@@ -1,49 +1,59 @@
-name: Build unsigned iOS training IPA
+name: Atlas Lab X — build unsigned IPA
 on:
   workflow_dispatch:
   push:
     branches: [main, master]
 jobs:
   build:
-    runs-on: macos-latest
-    timeout-minutes: 35
+    runs-on: macos-15
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Generate Xcode project
         run: xcodegen generate
-      - name: Build arm64 iPhone app (without signature)
+      - name: Verify Xcode version
+        run: xcodebuild -version
+      - name: Build unsigned release for a physical device
         run: |
           set -o pipefail
           xcodebuild \
-            -project AtlasLab.xcodeproj \
-            -scheme AtlasLab \
+            -project AtlasLabX.xcodeproj \
+            -scheme AtlasLabX \
             -configuration Release \
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
-            -derivedDataPath "${PWD}/DerivedData" \
+            -derivedDataPath "$PWD/DerivedData" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY='' \
             build 2>&1 | tee xcodebuild.log
-      - name: Create unsigned IPA and standalone Mach-O
+      - name: Export IPA and all binaries
         run: |
-          mkdir -p out/Payload
-          cp -R DerivedData/Build/Products/Release-iphoneos/AtlasLab.app out/Payload/
-          cd out
-          zip -qry AtlasLab-UNSIGNED.ipa Payload
-          cp Payload/AtlasLab.app/AtlasLab AtlasLab-arm64-MachO
-          rm -rf Payload
-      - uses: actions/upload-artifact@v4
+          set -euo pipefail
+          APP="DerivedData/Build/Products/Release-iphoneos/AtlasLabX.app"
+          test -f "$APP/AtlasLabX"
+          test -f "$APP/Frameworks/AtlasPolicy.framework/AtlasPolicy"
+          test -f "$APP/Frameworks/AtlasSignals.framework/AtlasSignals"
+          mkdir -p out/Payload out/MachO
+          cp -R "$APP" out/Payload/
+          cp "$APP/AtlasLabX" out/MachO/AtlasLabX-main-arm64
+          cp "$APP/Frameworks/AtlasPolicy.framework/AtlasPolicy" out/MachO/AtlasPolicy-arm64
+          cp "$APP/Frameworks/AtlasSignals.framework/AtlasSignals" out/MachO/AtlasSignals-arm64
+          (cd out && zip -qry AtlasLabX-UNSIGNED.ipa Payload)
+          rm -rf out/Payload
+          ls -lh out/MachO out/*.ipa
+      - name: Upload IPA and Mach-O binaries
+        uses: actions/upload-artifact@v4
         with:
-          name: AtlasLab-iOS-lab-files
-          path: out/*
+          name: AtlasLabX-iOS-binaries
+          path: out/
           if-no-files-found: error
       - name: Upload build log on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: build-log
+          name: AtlasLabX-build-log
           path: xcodebuild.log
           if-no-files-found: ignore

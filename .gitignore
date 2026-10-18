@@ -1,0 +1,11 @@
+DerivedData/
+*.xcodeproj/
+*.xcworkspace/
+.DS_Store
+*.xcuserstate
+__pycache__/
+.pytest_cache/
+.env
+out/
+xcodebuild.log
+server/dev-private-key.pem

@@ -1,7 +1,0 @@
-{
-  "active": false,
-  "planCode": 2,
-  "expiresAt": "2035-12-31T23:59:59Z",
-  "source": "OFFLINE_SERVER_SIMULATION_ONLY",
-  "message": "Имитация ответа сервера: срок еще не вышел, но доступ не активирован"
-}

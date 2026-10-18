@@ -1,0 +1,6 @@
+[
+ {"id":"orion","displayName":"Orion · Pro expired","caption":"Был PRO, но подписка закончилась 31.12.2023. Начальная исследовательская цель."},
+ {"id":"nova","displayName":"Nova · Lifetime","caption":"Активный пожизненный тариф. Контрольный пример рабочего доступа."},
+ {"id":"quartz","displayName":"Quartz · Suspended","caption":"Срок будущий, но статус заблокирован. Одной смены даты недостаточно."},
+ {"id":"echo","displayName":"Echo · Basic","caption":"Действующий базовый тариф, у которого нет расширенных возможностей."}
+]

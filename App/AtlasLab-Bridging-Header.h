@@ -1,1 +1,1 @@
-#import "LicenseCore/LicenseCore.h"
+#import "GateCore/NativeGate.h"

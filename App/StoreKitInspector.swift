@@ -1,19 +1,29 @@
 import Foundation
+import Combine
 import StoreKit
 
-// A real StoreKit 2 inspection path. No paid product is configured for this lab bundle ID,
-// so this normally finds no products/transactions. It never initiates a purchase.
-enum StoreKitInspector {
-    static func diagnostic() async -> String {
-        do {
-            let products = try await Product.products(for: ["com.reverselab.atlastraining.pro.monthly"])
-            var verified = 0
-            for await item in Transaction.currentEntitlements {
-                if case .verified(_) = item { verified += 1 }
+@MainActor
+final class AtlasStoreKitInspector: ObservableObject {
+    @Published private(set) var lines: [String] = ["Проверка StoreKit ещё не запускалась"]
+    @Published private(set) var busy = false
+
+    func inspect() async {
+        guard !busy else { return }
+        busy = true
+        defer { busy = false }
+        var output: [String] = []
+        var count = 0
+        for await result in Transaction.currentEntitlements {
+            count += 1
+            switch result {
+            case .verified(let transaction):
+                output.append("Проверена транзакция: \(transaction.productID)")
+            case .unverified(let transaction, let error):
+                output.append("Непроверенная транзакция \(transaction.productID): \(error.localizedDescription)")
             }
-            return "StoreKit 2: продуктов \(products.count), подтверждённых прав \(verified). Учебная лицензия с ними не связана."
-        } catch {
-            return "StoreKit 2: \(error.localizedDescription). Учебная локальная лицензия работает отдельно."
         }
+        output.insert("Текущих StoreKit entitlements: \(count)", at: 0)
+        output.append("Atlas Lab X НЕ продаёт товары и не использует найденные здесь покупки для локальной учебной подписки.")
+        lines = output
     }
 }

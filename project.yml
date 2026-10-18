@@ -1,6 +1,6 @@
-name: AtlasLab
+name: AtlasLabX
 options:
-  bundleIdPrefix: com.reverselab
+  bundleIdPrefix: com.atlaslab
   deploymentTarget:
     iOS: '16.0'
   createIntermediateGroups: true
@@ -9,25 +9,51 @@ settings:
     SWIFT_VERSION: '5.0'
     IPHONEOS_DEPLOYMENT_TARGET: '16.0'
     TARGETED_DEVICE_FAMILY: '1,2'
-    SWIFT_OBJC_BRIDGING_HEADER: App/AtlasLab-Bridging-Header.h
     ENABLE_BITCODE: 'NO'
-    PRODUCT_BUNDLE_IDENTIFIER: com.reverselab.atlastraining
-    CLANG_ENABLE_MODULES: 'YES'
+    CODE_SIGN_STYLE: Manual
     SWIFT_OPTIMIZATION_LEVEL: '-O'
     GCC_OPTIMIZATION_LEVEL: s
-    LLVM_LTO: 'NO'
+    SWIFT_COMPILATION_MODE: wholemodule
+    ENABLE_USER_SCRIPT_SANDBOXING: 'NO'
 targets:
-  AtlasLab:
+  AtlasPolicy:
+    type: framework
+    platform: iOS
+    sources:
+      - path: AtlasPolicy
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.atlaslab.policy
+        DEFINES_MODULE: YES
+        GENERATE_INFOPLIST_FILE: YES
+        SKIP_INSTALL: YES
+  AtlasSignals:
+    type: framework
+    platform: iOS
+    sources:
+      - path: AtlasSignals
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.atlaslab.signals
+        DEFINES_MODULE: YES
+        GENERATE_INFOPLIST_FILE: YES
+        SKIP_INSTALL: YES
+  AtlasLabX:
     type: application
     platform: iOS
     sources:
       - path: App
         excludes:
           - Info.plist
+    dependencies:
+      - target: AtlasPolicy
+        embed: true
+      - target: AtlasSignals
+        embed: true
     settings:
       base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.atlaslab.reverse.x
         INFOPLIST_FILE: App/Info.plist
-        PRODUCT_NAME: AtlasLab
+        SWIFT_OBJC_BRIDGING_HEADER: App/AtlasLab-Bridging-Header.h
+        PRODUCT_NAME: AtlasLabX
         ASSETCATALOG_COMPILER_APPICON_NAME: ''
-    scheme:
-      testTargets: []
