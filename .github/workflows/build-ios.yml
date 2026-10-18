@@ -1,0 +1,49 @@
+name: Build unsigned iOS training IPA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        run: xcodegen generate
+      - name: Build arm64 iPhone app (without signature)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project AtlasLab.xcodeproj \
+            -scheme AtlasLab \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "${PWD}/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY='' \
+            build 2>&1 | tee xcodebuild.log
+      - name: Create unsigned IPA and standalone Mach-O
+        run: |
+          mkdir -p out/Payload
+          cp -R DerivedData/Build/Products/Release-iphoneos/AtlasLab.app out/Payload/
+          cd out
+          zip -qry AtlasLab-UNSIGNED.ipa Payload
+          cp Payload/AtlasLab.app/AtlasLab AtlasLab-arm64-MachO
+          rm -rf Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AtlasLab-iOS-lab-files
+          path: out/*
+          if-no-files-found: error
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: xcodebuild.log
+          if-no-files-found: ignore
